@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+    redis:
+        image: redis:latest
+        restart: unless-stopped
+        ports:
+            - '6379:6379'
+        volumes:
+            - redis-data:/data # Mount a host directory to the container's /data directory
+
+volumes:
+    redis-data: # Define the persistent volume (optional, can be omitted if using anonymous volumes)

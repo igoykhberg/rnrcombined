@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  ###
+  montana-test-redis:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - montana-redis-data:/data
+    networks:
+      - montana-test-network
+  ###
+  montana-test-backend:
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - '3922:3922'
+    volumes:
+      - montana-backend-data:/var/www/backend
+    depends_on:
+      - montana-test-redis
+    networks:
+      - montana-test-network
+  ###
+  montana-test-frontend:
+    build: ./frontend
+    environment:
+      - PORT=4173
+    ports:
+      - '4173:4173'
+    depends_on:
+      - montana-test-backend
+
+volumes:
+  montana-backend-data:
+  montana-redis-data:
+networks:
+  montana-test-network:
+    driver: bridge
